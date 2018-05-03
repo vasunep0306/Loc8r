@@ -7,6 +7,19 @@ var sendJsonResponse = function(res, status, content) {
 };
 
 
+var theEarth = (function(){
+ var earthRadius = 6371; // km, miles is 3959
+ var getDistanceFromRads = function(rads) {
+ return parseFloat(rads * earthRadius);
+ };
+ var getRadsFromDistance = function(distance) {
+ return parseFloat(distance / earthRadius);
+ };
+ return {
+ getDistanceFromRads : getDistanceFromRads,
+ getRadsFromDistance : getRadsFromDistance
+ };
+})();
 
 //router.get('/locations', ctrlLocations.locationsListByDistance);
 module.exports.locationsListByDistance = function(req,res) {
