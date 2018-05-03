@@ -23,7 +23,31 @@ var theEarth = (function(){
 
 //router.get('/locations', ctrlLocations.locationsListByDistance);
 module.exports.locationsListByDistance = function(req,res) {
-    sendJsonResponse(res, 200, {"status" : "success"});
+    var lng = parseFloat(req.query.lng);
+    var lat = parseFloat(req.query.lat);
+    var point = {
+        type = "Point",
+        coordinates: [lng, lat]
+    };
+    var geoOptions = {
+        spherical: true,
+        maxDistance: theEarth.getRadsFromDistance(20),
+        num: 10
+    };
+    Loc.geoNear(point, options, function (err, results, stats) {
+        var locations = [];
+        results.forEach(function(doc) {
+            locations.push({
+                distance: theEarth.getDistanceFromRads(doc.dis),
+                name: doc.obj.name,
+                address: doc.obj.address,
+                rating: doc.obj.rating,
+                facilities: doc.obj.facilities,
+                _id: doc.obj._id
+            });
+        });
+        sendJsonResponse(res, 200, locations);
+    });
 };
 //router.post('/locations', ctrlLocations.locationsCreate);
 module.exports.locationsCreate = function(req,res) {
