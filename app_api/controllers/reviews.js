@@ -11,8 +11,25 @@ var sendJsonResponse = function(res, status, content) {
 
 //router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
 module.exports.reviewsCreate = function(req,res) {
-    sendJsonResponse(res, 200, {"status" : "success"});
-}
+    var locationid = req.params.locationid;
+    if (locationid) {
+        Loc
+            .findById(locationid)
+            .select('reviews')
+            .exec(
+            function(err, location) {
+                if (err) {
+                    sendJsonResponse(res, 400, err);
+                } else {
+                    doAddReview(req, res, location);
+                }
+            }
+        );
+    } else {
+        sendJsonResponse(res, 404, {"message": "Not found, locationid required"});
+    }
+};
+
 //router.get('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
 module.exports.reviewsReadOne = function(req,res) {
     if(req.params && req.params.locationid && req.params.reviewid) {
