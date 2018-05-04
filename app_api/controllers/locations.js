@@ -26,7 +26,7 @@ module.exports.locationsListByDistance = function(req,res) {
     var lng = parseFloat(req.query.lng);
     var lat = parseFloat(req.query.lat);
     var point = {
-        type = "Point",
+        type: "Point",
         coordinates: [lng, lat]
     };
     var geoOptions = {
@@ -34,6 +34,10 @@ module.exports.locationsListByDistance = function(req,res) {
         maxDistance: theEarth.getRadsFromDistance(20),
         num: 10
     };
+    if (!lng || !lat) {
+        sendJSONresponse(res, 404, {"message": "lng and lat query parameters are required"});
+        return;
+    }
     Loc.geoNear(point, options, function (err, results, stats) {
         var locations = [];
         results.forEach(function(doc) {
@@ -51,7 +55,30 @@ module.exports.locationsListByDistance = function(req,res) {
 };
 //router.post('/locations', ctrlLocations.locationsCreate);
 module.exports.locationsCreate = function(req,res) {
-    sendJsonResponse(res, 200, {"status" : "success"});
+    var newLocation = {
+        name: req.body.name,
+        address: req.body.address,
+        facilities: req.body.facilities.split(","),
+        coords: [parseFloat(req.body.lng), parseFloat(req.body.lat)],
+        openingTimes: [{
+            days: req.body.days1,
+            opening: req.body.opening1,
+            closing: req.body.closing1,
+            closed: req.body.closed1,
+        }, {
+            days: req.body.days2,
+            opening: req.body.opening2,
+            closing: req.body.closing2,
+            closed: req.body.closed2,
+        }]
+    };
+    Loc.create(newLocation, function(err, location){
+        if(err) {
+            sendJSONresponse(res, 400, err);
+        } else {
+            sendJsonResponse(res, 201, location);
+        }
+    })
 };
 //router.get('/locations/:locationid', ctrlLocations.locationsReadOne);
 module.exports.locationsReadOne = function(req,res) {
