@@ -9,6 +9,32 @@ var sendJsonResponse = function(res, status, content) {
 };
 
 
+//Adding and saving a subdocument
+var doAddReview = function(req, res, location) {
+    if (!location) {
+        sendJsonResponse(res, 404, {
+            "message": "locationid not found"
+        });
+    } else {
+        location.reviews.push({
+            author: req.body.author,
+            rating: req.body.rating,
+            reviewText: req.body.reviewText
+        });
+        location.save(function(err, location) {
+            var thisReview;
+            if (err) {
+                sendJsonResponse(res, 400, err);
+            } else {
+                updateAverageRating(location._id);
+                thisReview = location.reviews[location.reviews.length - 1];
+                sendJsonResponse(res, 201, thisReview);
+            }
+        });
+    }
+};
+
+
 //router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
 module.exports.reviewsCreate = function(req,res) {
     var locationid = req.params.locationid;
