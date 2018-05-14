@@ -145,7 +145,7 @@ module.exports.locationsUpdateOne = function(req,res) {
 module.exports.locationsDeleteOne = function(req,res) {
     var locationid = req.params.locationid;
     if ( locationid ) {
-        Loc.findByIdAndRemove(locationid);
+        Loc.findByIdAndRemove(locationid)
         .exec(
             function(err, location) {
                 if(err) {
