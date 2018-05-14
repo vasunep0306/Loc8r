@@ -35,6 +35,19 @@ var renderHomepage = function(req, res) {
 }
 /* GET 'home' page */
 module.exports.homeList = function(req, res){
+    var requestOptions, path;
+    path="/api/locations";
+    requestOptions = {
+        url: apiOptions.server + path,
+        method: "GET",
+        json: {},
+        qs : {
+            lng:  -0.7992599,
+            lat:   51.378091,
+            maxDistance: 20
+        }
+    };
+    request(requestOptions, renderHomepage);
     renderHomepage(req, res);
 };
 
