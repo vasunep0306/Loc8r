@@ -1,7 +1,12 @@
+var request = require("request");
 
-/* GET 'home' page */
-module.exports.homeList = function(req, res){
-        res.render('locations-list', {
+var apiOptions = {
+    server : "http://localhost:3000"
+};
+
+
+var renderHomepage = function(req, res) {
+    res.render('locations-list', {
             title: 'Loc8r - find a place to work with wifi',
             pageHeader: {
                 title: 'Loc8r',
@@ -27,6 +32,10 @@ module.exports.homeList = function(req, res){
                 distance: '250m'
             }]
         });
+}
+/* GET 'home' page */
+module.exports.homeList = function(req, res){
+    renderHomepage(req, res);
 };
 
 
