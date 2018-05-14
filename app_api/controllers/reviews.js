@@ -34,6 +34,40 @@ var doAddReview = function(req, res, location) {
     }
 };
 
+//Calculating and updating the average rating
+var updateAverageRating = function(locationid) {
+    Loc
+    .findById(locationid)
+    .select('rating review')
+    .exec(
+        function(err, location) {
+            if (!err) {
+                doAverageRating(location); // helper function
+            }
+        });
+};
+
+// define doAverageRating
+var doAverageRating = function(location) {
+    var i, reviewCount, ratingAverage, ratingTotal;
+    if( location.reviews && location.reviews.length > 0 ) {
+        reviewCount = location.reviews.length;
+        ratingTotal = 0;
+        for( i = 0; i < reviewCount; i++ ) {
+            ratingTotal = ratingTotal + location.reviews[i].rating;
+        }
+        ratingAverage = parseInt(ratingTotal / reviewCount, 10);
+        location.rating = ratingAverage;
+        location.save(function(err) {
+            if( err ) {
+                console.log( err );
+            } else {
+                console.log( `Average rating updated to ${ratingAverage}` );
+            }
+        });
+    }
+}
+
 
 //router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
 module.exports.reviewsCreate = function(req,res) {
