@@ -1,1 +1,2 @@
-#We are on chapter 7
+#We are on chapter 8
+#adding angular js into the mix
