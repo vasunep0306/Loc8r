@@ -56,7 +56,7 @@ module.exports.locationsListByDistance = function(req, res) {
   console.log('geoOptions: ' + geoOptions);
   if ((!lng && lng!==0) || (!lat && lat!==0) || ! maxDistance) {
     console.log('locationsListByDistance missing params');
-    sendJsonResponseresponse(res, 404, {
+    sendJsonResponse(res, 404, {
       "message": "lng, lat and maxDistance query parameters are all required"
     });
     return;
