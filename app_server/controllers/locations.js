@@ -102,7 +102,8 @@ var renderDetailPage = function ( req, res, locDetail ) {
 var renderReviewForm = function (req, res, locDetail) {
     res.render('location-review-form', {
         title: 'Review ' + locDetail.name + ' on Loc8r',
-        pageHeader: { title: 'Review ' + locDetail.name }
+        pageHeader: { title: 'Review ' + locDetail.name },
+        error: req.query.err
     });
 };
 
@@ -169,6 +170,8 @@ module.exports.doAddReview = function(req, res) {
     request(requestOptions, function(err, response, body){
         if (response.statusCode === 201) {
             res.redirect('/location/' + locationid);
+        } else if (response.statusCode === 400 && body.name && body.name === "ValidationError" ) {
+            res.redirect('/location/' + locationid + '/reviews/new?err=val');
         } else {
             _showError(req, res, response.statusCode);
         }
